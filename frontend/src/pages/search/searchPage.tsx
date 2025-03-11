@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Calendar, SearchIcon } from "lucide-react";
 import PlayButton from "../home/components/PlayButton";
-import  Topbar  from '@/components/Topbar';
+import Topbar from '@/components/Topbar';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -70,54 +71,56 @@ const SearchPage = () => {
             </div>
           </div>
         ) : (
-          <Table className="mt-4">
-            <TableHeader>
-              <TableRow className="hover:bg-zinc-800/50">
-                <TableHead className="w-[50px]"></TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Artist</TableHead>
-                <TableHead>Release Date</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {searchResults.length > 0 ? (
-                searchResults.map((result) => (
-                  <TableRow
-                    key={result._id}
-                    className="hover:bg-zinc-800/50 group relative"
-                  >
-                    <TableCell>
-                      <img
-                        src={result.imageUrl}
-                        alt={result.title}
-                        className="size-10 rounded object-cover"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {result.title}
-                    </TableCell>
-                    <TableCell>{result.artist}</TableCell>
-                    <TableCell>
-                      <span className="inline-flex items-center gap-1 text-zinc-400">
-                        <Calendar className="h-4 w-4" />{" "}
-                        {result.createdAt.split("T")[0]}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <PlayButton song={result} />
+          <ScrollArea className="mt-4 max-h-[calc(100vh-200px)]">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-zinc-800/50">
+                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Artist</TableHead>
+                  <TableHead>Release Date</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {searchResults.length > 0 ? (
+                  searchResults.map((result) => (
+                    <TableRow
+                      key={result._id}
+                      className="hover:bg-zinc-800/50 group relative"
+                    >
+                      <TableCell>
+                        <img
+                          src={result.imageUrl}
+                          alt={result.title}
+                          className="size-10 rounded object-cover"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {result.title}
+                      </TableCell>
+                      <TableCell>{result.artist}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center gap-1 text-zinc-400">
+                          <Calendar className="h-4 w-4" />{" "}
+                          {result.createdAt.split("T")[0]}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <PlayButton song={result} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-zinc-400">
+                      No results found
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center text-zinc-400">
-                    No results found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </ScrollArea>
         )}
       </div>
     </main>

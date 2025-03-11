@@ -113,3 +113,51 @@ export const deleteAlbum = async (req, res, next) => {
 export const checkAdmin = async (req, res, next) => {
 	res.status(200).json({ admin: true });
 };
+
+export const updateSong = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { title, artist, albumId, duration, Genres } = req.body;
+
+    const song = await Song.findById(id);
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
+    }
+
+    if (req.files) {
+      if (req.files.audioFile) {
+        const audioUrl = await uploadToCloudinary(req.files.audioFile);
+        song.audioUrl = audioUrl;
+      }
+      if (req.files.imageFile) {
+        const imageUrl = await uploadToCloudinary(req.files.imageFile);
+        song.imageUrl = imageUrl;
+      }
+    }
+
+    song.title = title || song.title;
+    song.artist = artist || song.artist;
+    song.duration = duration || song.duration;
+    song.Genres = Genres ? Genres.split(',') : song.Genres;
+
+    if (albumId && albumId !== song.albumId) {
+      if (song.albumId) {
+        await Album.findByIdAndUpdate(song.albumId, {
+          $pull: { songs: song._id },
+        });
+      }
+      if (albumId !== "none") {
+        await Album.findByIdAndUpdate(albumId, {
+          $push: { songs: song._id },
+        });
+      }
+      song.albumId = albumId === "none" ? null : albumId;
+    }
+
+    await song.save();
+    res.status(200).json(song);
+  } catch (error) {
+    console.log("Error in updateSong", error);
+    next(error);
+  }
+};

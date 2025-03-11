@@ -13,6 +13,7 @@ import { axiosInstance } from "@/lib/axios";
 import { Plus, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { getAudioDuration } from "@/utils/audioUtils"; 
 
 const AddAlbumDialog = () => {
 	const [albumDialogOpen, setAlbumDialogOpen] = useState(false);
@@ -23,14 +24,17 @@ const AddAlbumDialog = () => {
 		title: "",
 		artist: "",
 		releaseYear: new Date().getFullYear(),
+		duration: 0, 
 	});
 
 	const [imageFile, setImageFile] = useState<File | null>(null);
 
-	const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
 			setImageFile(file);
+			const duration = await getAudioDuration(file); 
+			setNewAlbum((prevAlbum) => ({ ...prevAlbum, duration })); 
 		}
 	};
 
@@ -47,6 +51,7 @@ const AddAlbumDialog = () => {
 			formData.append("artist", newAlbum.artist);
 			formData.append("releaseYear", newAlbum.releaseYear.toString());
 			formData.append("imageFile", imageFile);
+			formData.append("duration", newAlbum.duration.toString()); // Append duration to form data
 
 			await axiosInstance.post("/admin/albums", formData, {
 				headers: {
@@ -58,6 +63,7 @@ const AddAlbumDialog = () => {
 				title: "",
 				artist: "",
 				releaseYear: new Date().getFullYear(),
+				duration: 0,
 			});
 			setImageFile(null);
 			setAlbumDialogOpen(false);
@@ -134,6 +140,15 @@ const AddAlbumDialog = () => {
 							placeholder='Enter release year'
 							min={1900}
 							max={new Date().getFullYear()}
+						/>
+					</div>
+					<div className='space-y-2'>
+						<label className='text-sm font-medium'>Duration (seconds)</label>
+						<Input
+							type='number'
+							value={newAlbum.duration}
+							readOnly
+							className='bg-zinc-800 border-zinc-700'
 						/>
 					</div>
 				</div>
