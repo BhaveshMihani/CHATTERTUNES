@@ -58,7 +58,7 @@ const SearchPage = () => {
         ) : query === "" ? (
           <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
             <div className="text-center space-y-8 px-4">
-              <div className="flex justify-center animate-bounce">
+              <div className="flex justify-center animate-pulse">
                 <SearchIcon className="h-24 w-24 text-cyan-500" />
               </div>
               <div className="space-y-4">

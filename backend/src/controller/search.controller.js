@@ -1,36 +1,36 @@
 import { Song } from "../models/song.model.js";
 
 export const searchSongs = async (req, res, next) => {
-    const { query, page = 1, limit = 10 } = req.query;  // Added pagination parameters
-    console.log("Received search query:", query);  // Log the received query
+    const { query, page = 1, limit = 10 } = req.query;  
+    console.log("Received search query:", query); 
 
     if (!query) {
-        // If the query parameter is missing, return an error response
         return res.status(400).json({ message: "Query parameter is missing" });
     }
 
     try {
-        const searchRegex = new RegExp(query, 'i');  // Create a case-insensitive regex for partial matches
-        const offset = (page - 1) * limit;  // Calculate the offset for pagination
-
+        const searchRegex = new RegExp(query, 'i');
+        const offset = (page - 1) * limit;  
         const results = await Song.find({
             $or: [
                 { title: { $regex: searchRegex } },
-                { artist: { $regex: searchRegex } }
+                { artist: { $regex: searchRegex } },
+                { Genres: { $in: [searchRegex] } }  // Adjusted search for Genres
             ]
         })
-        .skip(offset)  // Skip results based on the offset
-        .limit(parseInt(limit))  // Limit the number of results
-        .sort({ title: 1 });  // Sort results by title (alphabetically)
+        .skip(offset)  
+        .limit(parseInt(limit))  
+        .sort({ title: 1 });  
 
         const totalResults = await Song.countDocuments({
             $or: [
                 { title: { $regex: searchRegex } },
-                { artist: { $regex: searchRegex } }
+                { artist: { $regex: searchRegex } },
+                { Genres: { $in: [searchRegex] } }  // Adjusted search for Genres
             ]
         });
 
-        console.log("Search results:", results);  // Log the search results
+        console.log("Search results:", results);  
         res.status(200).json({
             totalResults,
             currentPage: page,

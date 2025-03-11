@@ -15,12 +15,14 @@ import { useMusicStore } from "@/stores/useMusicStore";
 import { Plus, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { MultiSelect } from "@/components/ui/multi-select"; // Import MultiSelect component
 
 interface NewSong {
 	title: string;
 	artist: string;
 	album: string;
 	duration: string;
+	Genres: string[]; // Added Genres
 }
 
 const AddSongDialog = () => {
@@ -33,6 +35,7 @@ const AddSongDialog = () => {
 		artist: "",
 		album: "",
 		duration: "0",
+		Genres: [], // Added Genres
 	});
 
 	const [files, setFiles] = useState<{ audio: File | null; image: File | null }>({
@@ -59,6 +62,7 @@ const AddSongDialog = () => {
 			if (newSong.album && newSong.album !== "none") {
 				formData.append("albumId", newSong.album);
 			}
+			formData.append("Genres", newSong.Genres.join(',')); // Added Genres
 
 			formData.append("audioFile", files.audio);
 			formData.append("imageFile", files.image);
@@ -74,6 +78,7 @@ const AddSongDialog = () => {
 				artist: "",
 				album: "",
 				duration: "0",
+				Genres: [], // Reset Genres
 			});
 
 			setFiles({
@@ -203,6 +208,16 @@ const AddSongDialog = () => {
 								))}
 							</SelectContent>
 						</Select>
+					</div>
+
+					{/* Genres selection */}
+					<div className='space-y-2'>
+						<label className='text-sm font-medium'>Genres</label>
+						<MultiSelect
+							options={["Calm", "Exciting", "Melancholic", "Uplifting", "Funky", "Relaxed", "Groovy", "Festive", "Soulful", "Ambient"]}
+							selected={newSong.Genres}
+							onChange={(Genres) => setNewSong({ ...newSong, Genres })}
+						/>
 					</div>
 				</div>
 

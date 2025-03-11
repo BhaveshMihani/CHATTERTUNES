@@ -27,6 +27,10 @@ const songSchema = new mongoose.Schema(
 			ref: "Album",
 			required: false,
 		},
+		Genres: {
+			type: [String],
+			required: false,
+		},
 	},
 	{ timestamps: true }
 );
