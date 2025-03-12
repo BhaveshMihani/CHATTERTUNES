@@ -19,8 +19,10 @@ import albumRoutes from "./routes/album.route.js";
 import statRoutes from "./routes/stat.route.js";
 import searchRoutes from "./routes/search.route.js";
 import webhookRoutes from "./routes/webhook.js";
+import csvRoutes from "./routes/csv.route.js"; // Correct file name
 
 dotenv.config();
+console.log("Loaded Admin Emails:", process.env.ADMIN_EMAIL);
 
 const __dirname = path.resolve();
 const app = express();
@@ -59,7 +61,7 @@ cron.schedule("0 * * * *", () => {
 				return;
 			}
 			for (const file of files) {
-				fs.unlink(path.join(tempDir, file), (err) => {});
+				fs.unlink(path.join(tempDir, file), (err) => { });
 			}
 		});
 	}
@@ -73,7 +75,7 @@ app.use("/api/albums", albumRoutes);
 app.use("/api/stats", statRoutes);
 app.use("/api/search", searchRoutes);  // Ensure correct usage of search route
 app.use("/api/webhook", webhookRoutes);
-
+app.use("/api/csv", csvRoutes);
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "../frontend/dist")));
 	app.get("*", (req, res) => {

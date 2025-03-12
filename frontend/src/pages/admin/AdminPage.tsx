@@ -7,7 +7,7 @@ import SongsTabContent from "./components/SongsTabContent";
 import AlbumsTabContent from "./components/AlbumsTabContent";
 import { useEffect } from "react";
 import { useMusicStore } from "@/stores/useMusicStore";
-
+import DownloadCSV from "./components/DownloadCsv";
 const AdminPage = () => {
 	const { isAdmin, isLoading } = useAuthStore();
 
@@ -29,7 +29,7 @@ const AdminPage = () => {
 			<Header />
 
 			<DashboardStats />
-
+			<DownloadCSV />
 			<Tabs defaultValue='songs' className='space-y-6'>
 				<TabsList className='p-1 bg-zinc-800/50'>
 					<TabsTrigger value='songs' className='data-[state=active]:bg-zinc-700'>
