@@ -7,6 +7,7 @@ import SongsTabContent from "./components/SongsTabContent";
 import AlbumsTabContent from "./components/AlbumsTabContent";
 import { useEffect } from "react";
 import { useMusicStore } from "@/stores/useMusicStore";
+import UnauthorizedPage from "./components/UnauthorizedPage"; 
 
 const AdminPage = () => {
     const { isAdmin, isLoading } = useAuthStore();
@@ -18,7 +19,7 @@ const AdminPage = () => {
         fetchStats();
     }, [fetchAlbums, fetchSongs, fetchStats]);
 
-    if (!isAdmin && !isLoading) return <div>Unauthorized</div>;
+    if (!isAdmin && !isLoading) return <UnauthorizedPage />; 
 
     return (
         <div
