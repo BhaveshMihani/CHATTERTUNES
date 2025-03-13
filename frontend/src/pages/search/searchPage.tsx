@@ -24,21 +24,20 @@ const SearchPage = () => {
     fetchSearchResults(query);
   };
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e:any) => {
     const newQuery = e.target.value;
     console.log("Setting query value to:", newQuery);
     setQuery(newQuery);
     handleSearch(); // Trigger search on input change
   };
 
-  // Debugging useEffect to log search results
   useEffect(() => {
     console.log("Search results updated:", searchResults);
   }, [searchResults]);
 
   return (
-    <main className='rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900'>
-        <Topbar />
+    <main className="rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900">
+      <Topbar />
       <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-zinc-100 p-8">
         <div className="flex items-center gap-4">
           <Input
@@ -64,14 +63,13 @@ const SearchPage = () => {
               </div>
               <div className="space-y-4">
                 <p className="text-neutral-400 max-w-md mx-auto">
-                  Start by searching for your favorite songs, artists, or
-                  albums...
+                  Start by searching for your favorite songs, artists, or albums...
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          <ScrollArea className="mt-4 max-h-[calc(100vh-200px)]">
+          <ScrollArea className="h-[calc(100vh-200px)]"> 
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-zinc-800/50">

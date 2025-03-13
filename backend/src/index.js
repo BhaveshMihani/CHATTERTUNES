@@ -73,7 +73,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/songs", songRoutes);
 app.use("/api/albums", albumRoutes);
 app.use("/api/stats", statRoutes);
-app.use("/api/search", searchRoutes);  // Ensure correct usage of search route
+app.use("/api/search", searchRoutes);  
 app.use("/api/webhook", webhookRoutes);
 app.use("/api/csv", csvRoutes);
 if (process.env.NODE_ENV === "production") {

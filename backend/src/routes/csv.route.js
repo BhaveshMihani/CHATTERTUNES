@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import { generateCsvReport } from "../controller/csv.controller.js";
 const router = Router();

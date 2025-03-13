@@ -1,48 +1,56 @@
 import moment from "moment";
 import { User } from "../models/user.model.js";
+import { Song } from "../models/song.model.js";
+import { Album } from "../models/album.model.js";
 import { Parser } from "json2csv";
 
 export const generateCsvReport = async (req, res) => {
     try {
-        const { period } = req.query;
-        console.log("Received period:", period);
+        const { startDate, endDate, report } = req.query;
+        console.log("Received startDate:", startDate);
+        console.log("Received endDate:", endDate);
+        console.log("Received report:", report);
 
-        // Valid periods
-        const validPeriods = ["3days", "7days", "1month", "2months", "3months"];
-        const cleanedPeriod = period.trim();  // Trim spaces and newlines
+        // Valid reports
+        const validReports = ["user", "song", "album"];
+        const cleanedReport = report.trim();
 
-        console.log("Received period:", `"${cleanedPeriod}"`);
-        console.log("Valid periods:", validPeriods);
-        console.log("Is period valid?", validPeriods.includes(cleanedPeriod));
+        console.log("Received report:", `"${cleanedReport}"`);
+        console.log("Valid reports:", validReports);
+        console.log("Is report valid?", validReports.includes(cleanedReport));
 
-        if (!cleanedPeriod || !validPeriods.includes(cleanedPeriod)) {
-            return res.status(400).json({ error: "Invalid period parameter" });
+        if (!startDate || !endDate || !cleanedReport || !validReports.includes(cleanedReport)) {
+            return res.status(400).json({ error: "Invalid date range or report parameter" });
         }
 
-        let startDate;
-        if (period.includes("days")) {
-            const daysAgo = parseInt(period.replace("days", ""), 10);
-            startDate = moment().subtract(daysAgo, "days").toDate(); // Users from last X days
-        } else {
-            const monthsAgo = parseInt(period.replace("months", "").replace("month", ""), 10);
-            startDate = moment().subtract(monthsAgo, "months").startOf("month").toDate(); // Users from start of the selected month
+        const start = moment(startDate).startOf('day').toDate();
+        const end = moment(endDate).endOf('day').toDate();
+
+        console.log(`Fetching ${report} records created between: ${start} and ${end}`);
+
+        let records;
+        let fields;
+        if (report === "user") {
+            records = await User.find({ createdAt: { $gte: start, $lte: end } });
+            fields = ["fullName", "imageUrl", "clerkId", "createdAt"];
+        } else if (report === "song") {
+            records = await Song.find({ createdAt: { $gte: start, $lte: end } }).populate('albumId', 'title');
+            fields = ["title", "artist", "albumId.title", "createdAt"];
+        } else if (report === "album") {
+            records = await Album.find({ createdAt: { $gte: start, $lte: end } });
+            fields = ["title", "artist", "releaseYear", "createdAt"];
         }
 
-        console.log(`Fetching users created after: ${startDate}`);
-
-        const users = await User.find({ createdAt: { $gte: startDate } });
-
-        if (users.length === 0) {
-            return res.status(200).json({ message: "No users found for this period" });
+        if (records.length === 0) {
+            return res.status(200).json({ message: `No ${report} records found for this period` });
         }
 
         // Convert JSON to CSV
-        const fields = ["fullName", "imageUrl", "clerkId", "createdAt"];
         const json2csvParser = new Parser({ fields });
-        const csv = json2csvParser.parse(users);
+        const csv = json2csvParser.parse(records);
 
         res.header("Content-Type", "text/csv");
-        res.attachment("users-report.csv");
+        res.attachment(`${report}-report.csv`);
         res.send(csv);
     } catch (error) {
         console.error("Error generating CSV:", error);
