@@ -3,12 +3,12 @@ export interface Song {
 	title: string;
 	artist: string;
 	albumId: string | null;
-	imageUrl: string;
-	audioUrl: string;
+	imageUrl?: string; 
+	audioUrl?: string; 
 	duration: number;
 	createdAt: string;
 	updatedAt: string;
-	Genres: string[]; // Added Genres
+	Genres: string[]; 
 }
 
 export interface Album {
