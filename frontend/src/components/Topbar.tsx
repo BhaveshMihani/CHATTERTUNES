@@ -2,7 +2,7 @@ import { SignedOut, UserButton } from "@clerk/clerk-react";
 import { LayoutDashboardIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import SignInOAuthButtons from "./SignInOAuthButtons";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthStore } from "../stores/useAuthStore";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 
@@ -16,7 +16,7 @@ const Topbar = () => {
     >
       <div className="flex gap-2 items-center">
         <Link to={"/"}>
-        <img src="/headphone1.png" className="size-12" alt="Spotify logo" />
+          <img src="/headphone1.png" className="size-12" alt="Spotify logo" />
         </Link>
         <p className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
           CHATTERTUNES
