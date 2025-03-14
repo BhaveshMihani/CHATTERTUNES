@@ -32,7 +32,7 @@ initializeSocket(httpServer);
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://chattertunes.vercel.app"],
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
