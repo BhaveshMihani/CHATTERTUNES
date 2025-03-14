@@ -1,10 +1,9 @@
-import { SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 import { LayoutDashboardIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import SignInOAuthButtons from "./SignInOAuthButtons";
-import { useAuthStore } from "../stores/useAuthStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 
 const Topbar = () => {
   const { isAdmin } = useAuthStore();
@@ -34,7 +33,19 @@ const Topbar = () => {
         )}
 
         <SignedOut>
-          <SignInOAuthButtons />
+          <SignInButton mode="modal">
+            <Button variant={"outline"} size={"sm"}>
+              Login
+            </Button>
+          </SignInButton>
+        </SignedOut>
+
+        <SignedOut>
+          <SignUpButton mode="modal">
+            <Button variant={"outline"} size={"sm"}>
+              Sign Up
+            </Button>
+          </SignUpButton>
         </SignedOut>
 
         <UserButton />
