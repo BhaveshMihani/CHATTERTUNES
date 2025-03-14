@@ -2,21 +2,18 @@ import { User } from "../models/user.model.js";
 
 export const authCallback = async (req, res, next) => {
   try {
-    console.log('authCallback function accessed');  // Log function access
+    console.log('authCallback function accessed');  
     const event = req.body;
-    console.log('Received event:', event);  // Log the received event
+    console.log('Received event:', event);  
 
     if (event.type === 'user.created') {
       const { id, email_addresses, first_name, last_name, image_url } = event.data;
 
-      // Extract email from email_addresses array
       const email = email_addresses.length > 0 ? email_addresses[0].email_address : '';
 
-      // Check if user already exists
       const user = await User.findOne({ clerkId: id });
 
       if (!user) {
-        // Create new user
         const newUser = new User({
           clerkId: id,
           email,
@@ -33,6 +30,27 @@ export const authCallback = async (req, res, next) => {
       const { id } = event.data;
       await User.findOneAndDelete({ clerkId: id });
       console.log('User deleted:', id);
+
+    } else if (event.type === 'user.updated') {
+      const { id, email_addresses, first_name, last_name, image_url } = event.data;
+
+      const email = email_addresses.length > 0 ? email_addresses[0].email_address : '';
+
+      const updatedUser = await User.findOneAndUpdate(
+        { clerkId: id },
+        {
+          email,
+          fullName: `${first_name} ${last_name}`,
+          imageUrl: image_url,
+        },
+        { new: true }
+      );
+
+      if (updatedUser) {
+        console.log('User updated:', updatedUser);
+      } else {
+        console.log('User not found for update:', id);
+      }
     }
 
     res.status(200).json({ success: true });
