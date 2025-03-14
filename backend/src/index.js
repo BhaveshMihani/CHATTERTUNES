@@ -32,7 +32,7 @@ initializeSocket(httpServer);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://chattertunes.vercel.app"],
     credentials: true,
   })
 );
@@ -75,6 +75,8 @@ app.use("/api/stats", statRoutes);
 app.use("/api/search", searchRoutes);  
 app.use("/api/csv", csvRoutes);
 
+
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
@@ -82,10 +84,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// error handler
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: process.env.NODE_ENV === "production" ? "Internal server error" : err.message });
-});
 
 httpServer.listen(PORT, () => {
   console.log("Server is running on port " + PORT);
