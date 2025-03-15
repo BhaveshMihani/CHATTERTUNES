@@ -1,15 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useMusicStore } from "@/stores/useMusicStore";
-import { Calendar, Music, Trash2 } from "lucide-react";
+import { Calendar, Music, Trash2, Pencil } from "lucide-react";
 import { useEffect } from "react";
+import UpdateAlbumDialog from "./UpdateAlbumDialog";
 
 const AlbumsTable = () => {
-	const { albums, deleteAlbum, fetchAlbums } = useMusicStore();
+	const { albums, isLoading, error, deleteAlbum, fetchAlbums } = useMusicStore();
 
 	useEffect(() => {
 		fetchAlbums();
 	}, [fetchAlbums]);
+
+	if (isLoading) {
+		return (
+			<div className="flex items-center justify-center py-8">
+				<div className="text-zinc-400">Loading albums...</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex items-center justify-center py-8">
+				<div className="text-red-400">{error}</div>
+			</div>
+		);
+	}
 
 	return (
 		<Table>
@@ -20,7 +37,8 @@ const AlbumsTable = () => {
 					<TableHead>Artist</TableHead>
 					<TableHead>Release Year</TableHead>
 					<TableHead>Songs</TableHead>
-					<TableHead className='text-right'>Actions</TableHead>
+					<TableHead className='text-right'>Edit</TableHead>
+					<TableHead className='text-right'>Delete</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -42,6 +60,19 @@ const AlbumsTable = () => {
 								<Music className='h-4 w-4' />
 								{album.songs.length} songs
 							</span>
+						</TableCell>
+						<TableCell>
+							<div className="flex gap-2 justify-end">
+								<UpdateAlbumDialog album={{ ...album, releaseYear: album.releaseYear.toString() }}>
+									<Button
+										variant='ghost'
+										size='sm'
+										className='text-zinc-400 hover:text-zinc-300 hover:bg-cyan-400/10'
+									>
+										<Pencil className='h-4 w-4' />
+									</Button>
+								</UpdateAlbumDialog>
+							</div>
 						</TableCell>
 						<TableCell className='text-right'>
 							<div className='flex gap-2 justify-end'>
