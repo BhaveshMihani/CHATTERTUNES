@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import DatePicker from "@/components/ui/DatePicker"; 
+import { File } from "lucide-react";
+
 
 const DownloadCSV: React.FC = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -54,7 +56,7 @@ const DownloadCSV: React.FC = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
                 <Button className='bg-cyan-500 hover:bg-cyan-600 text-black'>
-                    Download Reports
+                   <File/>
                 </Button>
             </DialogTrigger>
 
