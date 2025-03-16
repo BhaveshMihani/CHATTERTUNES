@@ -32,14 +32,13 @@ const AudioPlayer = () => {
 
 		const audio = audioRef.current;
 
-		// check if this is actually a new song
 		const isSongChange = prevSongRef.current !== currentSong?.audioUrl;
 		if (isSongChange) {
-			audio.src = currentSong?.audioUrl;
+			audio.src = currentSong?.audioUrl || "";
 			// reset the playback position
 			audio.currentTime = 0;
 
-			prevSongRef.current = currentSong?.audioUrl;
+			prevSongRef.current = currentSong?.audioUrl ?? null;
 
 			if (isPlaying) audio.play();
 		}

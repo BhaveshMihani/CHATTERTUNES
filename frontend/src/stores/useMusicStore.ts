@@ -26,6 +26,7 @@ interface MusicStore {
 	deleteAlbum: (id: string) => Promise<void>;
   fetchSearchResults: (query: string) => Promise<void>;
   updateSong: (id: string, data: FormData) => Promise<void>;
+  updateAlbum: (id: string, data: FormData) => Promise<void>;
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -192,6 +193,26 @@ export const useMusicStore = create<MusicStore>((set) => ({
     } catch (error: any) {
       console.log("Error in updateSong", error);
       toast.error("Error updating song");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateAlbum: async (id, data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axiosInstance.put(`/admin/albums/${id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      set((state) => ({
+        albums: state.albums.map((album) => (album._id === id ? response.data : album)),
+      }));
+      toast.success("Album updated successfully");
+    } catch (error: any) {
+      console.log("Error in updateAlbum", error);
+      toast.error("Error updating album");
     } finally {
       set({ isLoading: false });
     }
