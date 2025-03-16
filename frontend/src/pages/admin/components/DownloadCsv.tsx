@@ -56,7 +56,7 @@ const DownloadCSV: React.FC = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
                 <Button className='bg-cyan-500 hover:bg-cyan-600 text-black'>
-                   <File/>
+                   <File/> Reports
                 </Button>
             </DialogTrigger>
 
