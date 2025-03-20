@@ -1,5 +1,6 @@
 import {
   SignedOut,
+  SignedIn,  // ✅ Import this
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
@@ -11,12 +12,13 @@ import { Button, buttonVariants } from "./ui/button";
 
 const Topbar = () => {
   const { isAdmin } = useAuthStore();
+
   return (
     <div
       className="flex items-center justify-between p-4 sticky top-0 bg-zinc-900/75 
-      backdrop-blur-md z-10
-    "
+      backdrop-blur-md z-10"
     >
+      {/* Logo Section */}
       <div className="flex gap-2 items-center">
         <Link to={"/"}>
           <img src="/headphone1.png" className="size-12" alt="Spotify logo" />
@@ -25,17 +27,30 @@ const Topbar = () => {
           CHATTERTUNES
         </p>
       </div>
+
+      {/* Navigation Links */}
       <div className="flex items-center gap-4">
+        {/* Admin Dashboard Button (Visible only if Admin) */}
         {isAdmin && (
           <Link
             to={"/admin"}
             className={cn(buttonVariants({ variant: "outline" }))}
           >
-            <LayoutDashboardIcon className="size-4  mr-2" />
+            <LayoutDashboardIcon className="size-4 mr-2" />
             Admin Dashboard
           </Link>
         )}
 
+        {/* Subscription Button (Visible Only if User is Signed In) */}
+        <SignedIn>
+          <Link to={"/subscribe"}>
+            <Button variant={"default"} size="default">
+              Subscribe
+            </Button>
+          </Link>
+        </SignedIn>
+
+        {/* Login Button (Only if User is Signed Out) */}
         <SignedOut>
           <SignInButton mode="modal">
             <Button variant={"outline"} size="default">
@@ -45,9 +60,11 @@ const Topbar = () => {
           </SignInButton>
         </SignedOut>
 
+        {/* User Profile Button */}
         <UserButton />
       </div>
     </div>
   );
 };
+
 export default Topbar;

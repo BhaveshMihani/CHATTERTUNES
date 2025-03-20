@@ -3,15 +3,13 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
+import fs from "fs";
 
 export default defineConfig({
   plugins: [react()],
   css: {
     postcss: {
-      plugins: [
-        tailwindcss,
-        autoprefixer,
-      ],
+      plugins: [tailwindcss, autoprefixer],
     },
   },
   resolve: {
@@ -20,6 +18,10 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 443,
+    https: {
+      key: fs.readFileSync("key.pem"),
+      cert: fs.readFileSync("cert.pem"),
+    },
   },
 });

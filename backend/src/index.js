@@ -19,7 +19,8 @@ import albumRoutes from "./routes/album.route.js";
 import statRoutes from "./routes/stat.route.js";
 import searchRoutes from "./routes/search.route.js";
 import csvRoutes from "./routes/csv.route.js";
-
+import subscriptionRoute from "./routes/subscription.route.js";
+import helmet from "helmet";
 dotenv.config();
 console.log("Loaded Admin Emails:", process.env.ADMIN_EMAIL);
 
@@ -32,10 +33,11 @@ initializeSocket(httpServer);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://localhost",
     credentials: true,
   })
 );
+
 
 app.use(express.json()); // to parse req.body
 app.use(clerkMiddleware()); // this will add auth to req obj => req.auth
@@ -60,10 +62,14 @@ cron.schedule("0 * * * *", () => {
         return;
       }
       for (const file of files) {
-        fs.unlink(path.join(tempDir, file), (err) => {});
+        fs.unlink(path.join(tempDir, file), (err) => { });
       }
     });
   }
+});
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://localhost https://sandbox-buy.paddle.com;");
+  next();
 });
 
 app.use("/api/users", userRoutes);
@@ -72,9 +78,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/songs", songRoutes);
 app.use("/api/albums", albumRoutes);
 app.use("/api/stats", statRoutes);
-app.use("/api/search", searchRoutes);  
+app.use("/api/search", searchRoutes);
 app.use("/api/csv", csvRoutes);
-
+app.use("/api/subscription", subscriptionRoute);
 
 
 if (process.env.NODE_ENV === "production") {
