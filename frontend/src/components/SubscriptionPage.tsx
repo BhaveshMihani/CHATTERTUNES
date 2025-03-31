@@ -55,7 +55,7 @@ const SubscriptionPlans: React.FC = () => {
     };
 
     try {
-      await axios.post("/subscription/webhook", subData);
+      await axios.post("/api/subscription/webhook", subData);
       toast.success("Subscription data sent successfully!");
     } catch (error) {
       toast.error("Failed to send subscription data!");
