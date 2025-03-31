@@ -28,7 +28,12 @@ const __dirname = path.resolve();
 const app = express();
 const PORT = process.env.PORT;
 
-const httpServer = createServer(app);
+const httpsOptions = {
+  key: fs.readFileSync(path.resolve(__dirname, "localhost-key.pem")),
+  cert: fs.readFileSync(path.resolve(__dirname, "localhost.pem")),
+};
+
+const httpServer = createServer(app,httpsOptions);
 initializeSocket(httpServer);
 
 app.use(
@@ -37,7 +42,6 @@ app.use(
     credentials: true,
   })
 );
-
 
 app.use(express.json()); // to parse req.body
 app.use(clerkMiddleware()); // this will add auth to req obj => req.auth
@@ -62,13 +66,16 @@ cron.schedule("0 * * * *", () => {
         return;
       }
       for (const file of files) {
-        fs.unlink(path.join(tempDir, file), (err) => { });
+        fs.unlink(path.join(tempDir, file), (err) => {});
       }
     });
   }
 });
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://localhost https://sandbox-buy.paddle.com;");
+  res.setHeader(
+    "Content-Security-Policy",
+    "frame-ancestors 'self' https://localhost https://sandbox-buy.paddle.com;"
+  );
   next();
 });
 
@@ -82,14 +89,12 @@ app.use("/api/search", searchRoutes);
 app.use("/api/csv", csvRoutes);
 app.use("/api/subscription", subscriptionRoute);
 
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
   });
 }
-
 
 httpServer.listen(PORT, () => {
   console.log("Server is running on port " + PORT);

@@ -14,8 +14,8 @@ const Header = () => {
 					<p className='text-zinc-400 mt-1'>Manage your music catalog</p>
 				</div>
 			</div>
-			<div className='flex items-center gap-3'> {/* Added a wrapper div */}
-				<DownloadCSV /> {/* Moved DownloadCSV button here */}
+			<div className='flex items-center gap-3'> 
+				<DownloadCSV /> 
 				<UserButton />
 			</div>
 		</div>

@@ -1,10 +1,10 @@
 import {
   SignedOut,
-  SignedIn,  // ✅ Import this
+  SignedIn, // ✅ Import this
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
-import { LayoutDashboardIcon, LogIn } from "lucide-react";
+import { CreditCard, LayoutDashboardIcon, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { cn } from "@/lib/utils";
@@ -43,10 +43,12 @@ const Topbar = () => {
 
         {/* Subscription Button (Visible Only if User is Signed In) */}
         <SignedIn>
-          <Link to={"/subscribe"}>
-            <Button variant={"default"} size="default">
-              Subscribe
-            </Button>
+          <Link
+            to={"/subscribe"}
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
+            <CreditCard />
+            Subscribe
           </Link>
         </SignedIn>
 
