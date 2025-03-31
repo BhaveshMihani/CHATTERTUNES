@@ -27,7 +27,7 @@ const DownloadCSV: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/csv/download?report=${selectedReport}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
+            const response = await fetch(`api/csv/download?report=${selectedReport}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "text/csv",
