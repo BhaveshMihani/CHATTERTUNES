@@ -11,6 +11,7 @@ import SubscriptionPage from "./components/SubscriptionPage";
 import { Toaster } from "react-hot-toast";
 import NotFoundPage from "./pages/404/NotFoundPage";
 import SearchPage from "./pages/search/searchPage";
+import { SubscriptionProvider } from "./context/SubscriptionContext"; // Import the new context
 
 declare global {
     interface Window {
@@ -30,26 +31,28 @@ function App() {
     }, []);
 
     return (
-        <>
-            <Routes>
-                <Route
-                    path="/sso-callback"
-                    element={<AuthenticateWithRedirectCallback signUpForceRedirectUrl={"/auth-callback"} />}
-                />
-                <Route path="/auth-callback" element={<AuthCallbackPage />} />
-                <Route path="/admin" element={<AdminPage />} />
+        <SubscriptionProvider> {/* Wrap the app with SubscriptionProvider */}
+            <>
+                <Routes>
+                    <Route
+                        path="/sso-callback"
+                        element={<AuthenticateWithRedirectCallback signUpForceRedirectUrl={"/auth-callback"} />}
+                    />
+                    <Route path="/auth-callback" element={<AuthCallbackPage />} />
+                    <Route path="/admin" element={<AdminPage />} />
 
-                <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/chat" element={<ChatPage />} />
-                    <Route path="/albums/:albumId" element={<AlbumPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                    <Route path="/subscribe" element={<SubscriptionPage />} />
-                </Route>
-            </Routes>
-            <Toaster toastOptions={{ style: { background: "#333", color: "#fff" } }} />
-        </>
+                    <Route element={<MainLayout />}>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/chat" element={<ChatPage />} />
+                        <Route path="/albums/:albumId" element={<AlbumPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                        <Route path="/subscribe" element={<SubscriptionPage />} />
+                    </Route>
+                </Routes>
+                <Toaster toastOptions={{ style: { background: "#333", color: "#fff" } }} />
+            </>
+        </SubscriptionProvider>
     );
 }
 

@@ -3,7 +3,11 @@ import { useMusicStore } from "@/stores/useMusicStore";
 import { Calendar } from "lucide-react"; // Removed TableIcon
 import { useEffect } from "react";
 
-const UsersTable = () => {
+interface UsersTableProps {
+  searchTerm: string;
+}
+
+const UsersTable = ({ searchTerm }: UsersTableProps) => {
   const { users, isLoading, error, fetchUsers } = useMusicStore();
 
   useEffect(() => {
@@ -37,19 +41,22 @@ const UsersTable = () => {
       </TableHeader>
       <TableBody>
         {users
+          .filter((user) =>
+            user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+          )
           .slice() // Create a shallow copy to avoid mutating the original array
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Sort by createdAt in descending order
           .map((user) => (
             <TableRow key={user._id} className="hover:bg-zinc-800/50">
               <TableCell>
-          <img src={user.imageUrl} alt={user.fullName} className="w-10 h-10 rounded object-cover" />
+                <img src={user.imageUrl} alt={user.fullName} className="w-10 h-10 rounded object-cover" />
               </TableCell>
               <TableCell className="font-medium">{user.fullName}</TableCell>
               <TableCell>
-          <span className="inline-flex items-center gap-1 text-zinc-400">
-            <Calendar className="h-4 w-4" />
-            {new Date(user.createdAt).toLocaleDateString("en-GB")} 
-          </span>
+                <span className="inline-flex items-center gap-1 text-zinc-400">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(user.createdAt).toLocaleDateString("en-GB")} 
+                </span>
               </TableCell>
             </TableRow>
           ))}

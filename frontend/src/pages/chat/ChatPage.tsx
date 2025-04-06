@@ -1,7 +1,7 @@
 import Topbar from "@/components/Topbar";
 import { useChatStore } from "@/stores/useChatStore";
 import { useUser } from "@clerk/clerk-react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import UsersList from "./components/UsersList";
 import ChatHeader from "./components/ChatHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,6 +9,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import MessageInput from "./components/MessageInput";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useSubscription } from "@/context/SubscriptionContext"; // Import the subscription hook
 
 const formatTime = (date: string) => {
 	return new Date(date).toLocaleTimeString("en-US", {
@@ -20,19 +21,13 @@ const formatTime = (date: string) => {
 
 const ChatPage = () => {
 	const { user } = useUser();
-	const { messages, selectedUser, fetchUsers, fetchMessages, fetchSubscriptionStatus } = useChatStore();
-	const [isSubscribed, setIsSubscribed] = useState(false);
+	const { messages, selectedUser, fetchUsers, fetchMessages } = useChatStore();
+	const { isSubscribed } = useSubscription(); // Use the global subscription status
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (user) {
-			fetchUsers();
-			(async () => {
-				const status = await fetchSubscriptionStatus(user.id);
-				setIsSubscribed(status);
-			})();
-		}
-	}, [fetchUsers, fetchSubscriptionStatus, user]);
+		if (user) fetchUsers();
+	}, [fetchUsers, user]);
 
 	useEffect(() => {
 		if (selectedUser) fetchMessages(selectedUser.clerkId);
