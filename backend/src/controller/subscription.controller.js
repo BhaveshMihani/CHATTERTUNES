@@ -16,7 +16,7 @@ export const handleSubscriptionWebhook = async (req, res) => {
             status = data.status || "pending"; // Use default status if missing
         } else if (event_type === "transaction.completed") {
             userId = data.custom_data?.userId; // Map Paddle's custom_data.userId to userId
-            priceId = data.subscription_id;  // Use subscription_id as priceId
+            priceId = data.priceId;  // Use subscription_id as priceId
             status = "active"; // Assume active for completed transactions
         }
 
