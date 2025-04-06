@@ -10,6 +10,16 @@ export const getAllUsers = async (req, res, next) => {
 		next(error);
 	}
 };
+export const getAllUsersAd = async (req, res, next) => {
+	try {
+		const users = await User.find();
+		res.status(200).json(users);
+	} catch (error) {
+		next(error);
+	}
+};
+
+
 
 export const getMessages = async (req, res, next) => {
 	try {

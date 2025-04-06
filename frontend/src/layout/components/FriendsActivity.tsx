@@ -36,7 +36,7 @@ const FriendsActivity = () => {
 							return (
 								<div
 									key={user._id}
-									className='cursor-pointer hover:bg-zinc-800/50 p-3 rounded-md transition-colors group'
+									className='cursor-pointer hover:bg-zinc-800/50 p-3 rounded-md transition-colors group relative'
 								>
 									<div className='flex items-start gap-3'>
 										<div className='relative'>
@@ -46,8 +46,7 @@ const FriendsActivity = () => {
 											</Avatar>
 											<div
 												className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-900 
-													${onlineUsers.has(user.clerkId) ? "bg-blue-500" : "bg-zinc-500"}
-												`}
+													${onlineUsers.has(user.clerkId) ? "bg-blue-500" : "bg-zinc-500"}`}
 												aria-hidden='true'
 											/>
 										</div>

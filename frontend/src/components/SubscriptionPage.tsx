@@ -1,21 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { toast } from "sonner";
-import axios from "axios";
-import { useUser, useAuth } from "@clerk/clerk-react"; // Using Clerk hooks
+import { useUser } from "@clerk/clerk-react";
 import { FaCalendarWeek, FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
 import { cn } from "@/lib/utils";
-import Topbar from "@/components/Topbar"; // Importing Topbar component
-
-declare global {
-    interface Window {
-        Paddle: any;
-    }
-}
+import Topbar from "@/components/Topbar";
 
 const CONFIG = {
-    clientToken: "test_d923dc1fccb7a92542b9409bdbf",
     prices: {
         weekly: "pri_01jpmjme49mny8xca4s1ffpcea",
         monthly: "pri_01jpmjvxvvef48dyheyk9yhqy6",
@@ -29,48 +20,20 @@ const SubscriptionPlans: React.FC = () => {
         { title: "Monthly Plan", price: "$40", priceId: CONFIG.prices.monthly, icon: <FaCalendarAlt size={40} className="text-blue-400" /> },
         { title: "Yearly Plan", price: "$400", priceId: CONFIG.prices.yearly, icon: <FaCalendarCheck size={40} className="text-blue-400" /> },
     ];
+
     const { user } = useUser();
-    const { userId } = useAuth();
 
     const handlePayment = async (priceId: string) => {
         if (window.Paddle) {
             window.Paddle.Checkout.open({
                 items: [{ priceId, quantity: 1 }],
                 customer: { email: user?.primaryEmailAddress?.emailAddress },
-                successCallback: async () => {
-                    try {
-                        await axios.post("/api/subscription/webhook", {
-                            userId,
-                            priceId,
-                            status: "active",
-                        });
-                        toast.success("Subscription created successfully!");
-                    } catch (error) {
-                        toast.error("Failed to create subscription!");
-                    }
-                },
             });
         }
     };
 
-    useEffect(() => {
-        if (window.Paddle) {
-            window.Paddle.Environment.set("sandbox");
-            window.Paddle.Initialize({
-                token: CONFIG.clientToken,
-                eventCallback: (event: any) => {
-                    console.log("Paddle event:", event);
-                    if (event.name === "checkout.completed") {
-                        toast.success("Payment successful!");
-                    }
-                },
-            });
-        }
-    }, []);
-
     return (
         <div className="bg-zinc-900 text-zinc-100 min-h-screen">
-            {/* Topbar for the page */}
             <Topbar />
             <div className="p-8 flex flex-col items-center space-y-8">
                 <div className="text-center mb-10">

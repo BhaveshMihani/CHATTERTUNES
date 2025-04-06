@@ -1,11 +1,12 @@
 import { axiosInstance } from "@/lib/axios";
-import { Album, Song, Stats } from "@/types";
+import { Album, Song, Stats, User } from "@/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
 interface MusicStore {
   albums: Album[];
   songs: Song[];
+  users:User[]
   isLoading: boolean;
   error: string | null;
   currentAlbum: Album | null;
@@ -16,6 +17,7 @@ interface MusicStore {
   searchResults: Song[];
 
   fetchAlbums: () => Promise<void>;
+  fetchUsers: () => Promise<void>;
   fetchAlbumById: (id: string) => Promise<void>;
   fetchFeaturedSongs: () => Promise<void>;
   fetchMadeForYou: () => Promise<void>;
@@ -32,6 +34,7 @@ interface MusicStore {
 export const useMusicStore = create<MusicStore>((set) => ({
   albums: [],
   songs: [],
+  users: [],
   isLoading: false,
   error: null,
   currentAlbum: null,
@@ -44,6 +47,18 @@ export const useMusicStore = create<MusicStore>((set) => ({
     totalSongs: 0,
     totalArtists: 0,
     totalUsers: 0,
+  },
+
+  fetchUsers: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axiosInstance.get("/users/allUsers"); // Updated endpoint
+      set({ users: response.data, isLoading: false });
+    } catch (error: any) {
+      set({ error: error.response.data.Message });
+    } finally {
+      set({ isLoading: false });
+    }
   },
 
   deleteSong: async (id) => {

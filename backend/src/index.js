@@ -20,7 +20,8 @@ import statRoutes from "./routes/stat.route.js";
 import searchRoutes from "./routes/search.route.js";
 import csvRoutes from "./routes/csv.route.js";
 import subscriptionRoute from "./routes/subscription.route.js";
-import helmet from "helmet";
+
+
 dotenv.config();
 console.log("Loaded Admin Emails:", process.env.ADMIN_EMAIL);
 
@@ -43,15 +44,15 @@ app.use(
   })
 );
 
-app.use(express.json()); // to parse req.body
-app.use(clerkMiddleware()); // this will add auth to req obj => req.auth
+app.use(express.json()); 
+app.use(clerkMiddleware());
 app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: path.join(__dirname, "tmp"),
     createParentPath: true,
     limits: {
-      fileSize: 10 * 1024 * 1024, // 10MB  max file size
+      fileSize: 10 * 1024 * 1024,
     },
   })
 );

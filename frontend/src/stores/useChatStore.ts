@@ -1,8 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
-import { Message, User, Song } from "@/types"; // Import Song
+import { Message, User } from "@/types"; // Import Song
 import { create } from "zustand";
 import { io } from "socket.io-client";
-import { usePlayerStore } from "@/stores/usePlayerStore"; // Import usePlayerStore
 
 interface ChatStore {
 	users: User[];
@@ -21,7 +20,6 @@ interface ChatStore {
 	sendMessage: (receiverId: string, senderId: string, content: string) => void;
 	fetchMessages: (userId: string) => Promise<void>;
 	setSelectedUser: (user: User | null) => void;
-	stealSong: (userId: string) => void; // Add stealSong function
 }
 
 const baseURL = import.meta.env.MODE === "development" ? "http://localhost:5000" : "/";
@@ -133,25 +131,5 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 		} finally {
 			set({ isLoading: false });
 		}
-	},
-
-	stealSong: (userId) => {
-		const { userActivities } = get();
-		const activity = userActivities.get(userId);
-		if (activity && activity !== "Idle") {
-			const song: Song = {
-				_id: userId, // This should be replaced with a proper song ID
-				title: activity.replace("Playing ", "").split(" by ")[0],
-				artist: activity.split(" by ")[1],
-				albumId: null,
-				imageUrl: "", // This should be replaced with a proper image URL
-				audioUrl: "", // This should be replaced with a proper audio URL
-				duration: 0, // This should be replaced with a proper duration
-				createdAt: "",
-				updatedAt: "",
-				Genres: [],
-			};
-			usePlayerStore.getState().setCurrentSong(song);
-		}
-	},
+	}
 }));
