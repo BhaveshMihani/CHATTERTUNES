@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useUser } from "@clerk/clerk-react";
+import { useUser,useAuth } from "@clerk/clerk-react";
 import { FaCalendarWeek, FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import Topbar from "@/components/Topbar";
@@ -22,12 +22,15 @@ const SubscriptionPlans: React.FC = () => {
     ];
 
     const { user } = useUser();
+    const { userId } = useAuth();
 
-    const handlePayment = async (priceId: string) => {
+
+   const handlePayment = async (priceId: string) => {
         if (window.Paddle) {
             window.Paddle.Checkout.open({
                 items: [{ priceId, quantity: 1 }],
                 customer: { email: user?.primaryEmailAddress?.emailAddress },
+                customData:{userId: userId},
             });
         }
     };

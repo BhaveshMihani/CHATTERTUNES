@@ -20,6 +20,7 @@ interface ChatStore {
 	sendMessage: (receiverId: string, senderId: string, content: string) => void;
 	fetchMessages: (userId: string) => Promise<void>;
 	setSelectedUser: (user: User | null) => void;
+	fetchSubscriptionStatus: (userId: string) => Promise<boolean>;
 }
 
 const baseURL = import.meta.env.MODE === "development" ? "http://localhost:5000" : "/";
@@ -51,6 +52,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 			set({ error: error.response.data.message });
 		} finally {
 			set({ isLoading: false });
+		}
+	},
+
+	fetchSubscriptionStatus: async (userId: string) => {
+		try {
+			const response = await axiosInstance.get(`/subscription/status/${userId}`);
+			return response.data.isSubscribed;
+		} catch (error: any) {
+			console.error("Error fetching subscription status:", error.response?.data?.message || error.message);
+			return false; // Default to unsubscribed if there's an error
 		}
 	},
 

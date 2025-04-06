@@ -1,12 +1,14 @@
 import Topbar from "@/components/Topbar";
 import { useChatStore } from "@/stores/useChatStore";
 import { useUser } from "@clerk/clerk-react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import UsersList from "./components/UsersList";
 import ChatHeader from "./components/ChatHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import MessageInput from "./components/MessageInput";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const formatTime = (date: string) => {
 	return new Date(date).toLocaleTimeString("en-US", {
@@ -18,11 +20,19 @@ const formatTime = (date: string) => {
 
 const ChatPage = () => {
 	const { user } = useUser();
-	const { messages, selectedUser, fetchUsers, fetchMessages } = useChatStore();
+	const { messages, selectedUser, fetchUsers, fetchMessages, fetchSubscriptionStatus } = useChatStore();
+	const [isSubscribed, setIsSubscribed] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (user) fetchUsers();
-	}, [fetchUsers, user]);
+		if (user) {
+			fetchUsers();
+			(async () => {
+				const status = await fetchSubscriptionStatus(user.id);
+				setIsSubscribed(status);
+			})();
+		}
+	}, [fetchUsers, fetchSubscriptionStatus, user]);
 
 	useEffect(() => {
 		if (selectedUser) fetchMessages(selectedUser.clerkId);
@@ -33,6 +43,29 @@ const ChatPage = () => {
 	return (
 		<main className='h-full rounded-lg bg-gradient-to-b from-zinc-800 to-zinc-900 overflow-hidden'>
 			<Topbar />
+
+			{/* Subscription Check */}
+			{!isSubscribed && (
+				<div className="absolute inset-0 bg-black/50 backdrop-blur-md flex flex-col items-center justify-center z-50">
+					<p className="text-white text-lg mb-4">You need to subscribe to access the chat.</p>
+					<div className="space-y-4 space-x-4">
+						<Button
+							variant="outline"
+							className="text-white"
+							onClick={() => navigate("/subscribe")}
+						>
+							Go to Subscription Page
+						</Button>
+						<Button
+							variant="outline"
+							className="text-white"
+							onClick={() => navigate("/")}
+						>
+							Go to Home Page
+						</Button>
+					</div>
+				</div>
+			)}
 
 			<div className='grid lg:grid-cols-[300px_1fr] grid-cols-[80px_1fr] h-[calc(100vh-180px)]'>
 				<UsersList />

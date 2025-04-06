@@ -10,19 +10,19 @@ export const handleSubscriptionWebhook = async (req, res) => {
         // Extract required fields based on event type
         let userId, priceId, status;
 
-        if (event_type === " checkout.completed") {
-             userId = data.userId;
-            priceId = data.subscription_id;
-            status = "active"; 
+        if (event_type === "checkout.completed") {
+            userId = data.custom_data?.userId; 
+            priceId = data.priceId; 
+            status = data.status || "pending"; // Use default status if missing
         } else if (event_type === "transaction.completed") {
-            userId = data.userId; // Map Paddle's customer_id to userId
-            priceId = data.subscription_id; // Use subscription_id as priceId
+            userId = data.custom_data?.userId; // Map Paddle's custom_data.userId to userId
+            priceId = data.subscription_id;  // Use subscription_id as priceId
             status = "active"; // Assume active for completed transactions
         }
 
         // Validate extracted fields
         if (!userId || !priceId || !status) {
-            console.error("Missing required fields:", req.body); // Log missing fields
+            console.error("Missing required fields:", { userId, priceId, status }); // Log missing fields
             return res.status(400).json({ message: "Missing required fields" });
         }
 
@@ -50,6 +50,22 @@ export const getUserSubscription = async (req, res) => {
 
         res.json(subscription);
     } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+export const checkSubscriptionStatus = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const subscription = await Subscription.findOne({ userId, status: "active" });
+
+        if (subscription) {
+            return res.json({ isSubscribed: true });
+        }
+
+        res.json({ isSubscribed: false });
+    } catch (error) {
+        console.error("Error checking subscription status:", error.message);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
