@@ -2,7 +2,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { LucideUsers2, Search } from 'lucide-react'
 import UsersTable from './UsersTable'
 import { useState } from "react";
-import AddUserDialog from './AddUserDialog';
 
 const UsersTabContent = () => {
 	const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +28,6 @@ const UsersTabContent = () => {
 								className="pl-10 pr-3 py-1 text-sm bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-2xl"
 							/>
 						</div>
-						<AddUserDialog /> 
 					</div>
 				</div>
 			</CardHeader>
