@@ -17,7 +17,6 @@ const LeftSidebar = () => {
 
   return (
     <div className="h-full flex flex-col gap-2">
-      {/* Navigation menu */}
 
       <div className="rounded-lg bg-zinc-900 p-4">
         <div className="space-y-2">
@@ -72,7 +71,7 @@ const LeftSidebar = () => {
           </div>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-300px)]">
+        <ScrollArea className="h-[calc(100vh-400px)] max-h-full">
           <div className="space-y-2">
             {isLoading ? (
               <PlaylistSkeleton />

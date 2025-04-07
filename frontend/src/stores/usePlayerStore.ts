@@ -168,25 +168,31 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
   playPrevious: () => {
     const { currentIndex, queue, repeatMode } = get();
+    const audio = document.querySelector("audio");
+
+    if (audio && audio.currentTime > 5) {
+      audio.currentTime = 0;
+      audio.play();
+      return;
+    }
 
     if (repeatMode === "song") {
-        const audio = document.querySelector("audio");
-        if (audio) {
-            audio.currentTime = 0;
-            audio.play();
-        }
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
     } else {
-        const prevIndex = currentIndex - 1;
-        
-        if (prevIndex >= 0) {
-            const prevSong = queue[prevIndex];
-            const socket = useChatStore.getState().socket;
-            
-            if (socket?.auth) {
-                socket.emit("update_activity", {
-                    userId: socket.auth.userId,
-                    activity: `Playing ${prevSong.title} by ${prevSong.artist}`,
-                });
+      const prevIndex = currentIndex - 1;
+
+      if (prevIndex >= 0) {
+        const prevSong = queue[prevIndex];
+        const socket = useChatStore.getState().socket;
+
+        if (socket?.auth) {
+          socket.emit("update_activity", {
+            userId: socket.auth.userId,
+            activity: `Playing ${prevSong.title} by ${prevSong.artist}`,
+          });
         }
 
         set({

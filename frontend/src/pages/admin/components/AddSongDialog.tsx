@@ -46,6 +46,16 @@ const AddSongDialog = () => {
 	const audioInputRef = useRef<HTMLInputElement>(null);
 	const imageInputRef = useRef<HTMLInputElement>(null);
 
+	const handleAudioFileChange = (file: File) => {
+		setFiles((prev) => ({ ...prev, audio: file }));
+
+		const audio = document.createElement("audio");
+		audio.src = URL.createObjectURL(file);
+		audio.addEventListener("loadedmetadata", () => {
+			setNewSong((prev) => ({ ...prev, duration: Math.floor(audio.duration).toString() }));
+		});
+	};
+
 	const handleSubmit = async () => {
 		setIsLoading(true);
 
@@ -114,7 +124,11 @@ const AddSongDialog = () => {
 						accept='audio/*'
 						ref={audioInputRef}
 						hidden
-						onChange={(e) => setFiles((prev) => ({ ...prev, audio: e.target.files![0] }))}
+						onChange={(e) => {
+							if (e.target.files && e.target.files[0]) {
+								handleAudioFileChange(e.target.files[0]);
+							}
+						}}
 					/>
 
 					<input

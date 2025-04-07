@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import NotFoundPage from "./pages/404/NotFoundPage";
 import SearchPage from "./pages/search/searchPage";
 import { SubscriptionProvider } from "./context/SubscriptionContext"; // Import the new context
+import AllSongsPage from "./pages/all-songs/AllSongsPage";
 
 declare global {
     interface Window {
@@ -46,6 +47,7 @@ function App() {
                         <Route path="/search" element={<SearchPage />} />
                         <Route path="/chat" element={<ChatPage />} />
                         <Route path="/albums/:albumId" element={<AlbumPage />} />
+                        <Route path="/all-songs" element={<AllSongsPage />} />
                         <Route path="*" element={<NotFoundPage />} />
                         <Route path="/subscribe" element={<SubscriptionPage />} />
                     </Route>
