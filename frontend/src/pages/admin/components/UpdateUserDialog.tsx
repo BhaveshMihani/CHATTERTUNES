@@ -39,6 +39,7 @@ const UpdateUserDialog = ({ user, children }: { user: UpdateUser, children: Reac
 
       formData.append("id", updatedUser._id);
       formData.append("fullName", updatedUser.fullName);
+      formData.append("event.type", "user.updated"); 
 
       if (imageFile) {
         formData.append("imageFile", imageFile);
@@ -46,7 +47,7 @@ const UpdateUserDialog = ({ user, children }: { user: UpdateUser, children: Reac
         formData.append("imageUrl", updatedUser.imageUrl);
       }
 
-      const response = await fetch('/auth/callback', {
+      const response = await fetch('/api/auth/callback', {
         method: 'POST',
         body: formData,
       });
