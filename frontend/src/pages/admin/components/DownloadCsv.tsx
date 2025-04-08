@@ -80,6 +80,7 @@ const DownloadCSV: React.FC = () => {
                                 <SelectItem value='user'>User Report</SelectItem>
                                 <SelectItem value='song'>Song Report</SelectItem>
                                 <SelectItem value='album'>Album Report</SelectItem>
+                                <SelectItem value='subscription'>Subscription Report</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

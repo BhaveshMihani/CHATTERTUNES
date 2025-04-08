@@ -2,6 +2,7 @@ import moment from "moment";
 import { User } from "../models/user.model.js";
 import { Song } from "../models/song.model.js";
 import { Album } from "../models/album.model.js";
+import Subscription  from "../models/subscription.model.js";
 import { Parser } from "json2csv";
 
 export const generateCsvReport = async (req, res) => {
@@ -12,7 +13,7 @@ export const generateCsvReport = async (req, res) => {
         console.log("Received report:", report);
 
         // Valid reports
-        const validReports = ["user", "song", "album"];
+        const validReports = ["user", "song", "album", "subscription"];
         const cleanedReport = report.trim();
 
         console.log("Received report:", `"${cleanedReport}"`);
@@ -39,6 +40,9 @@ export const generateCsvReport = async (req, res) => {
         } else if (report === "album") {
             records = await Album.find({ createdAt: { $gte: start, $lte: end } });
             fields = ["title", "artist", "releaseYear", "createdAt"];
+        } else if (report === "subscription") {
+            records = await Subscription.find({ createdAt: { $gte: start, $lte: end } });
+            fields = ["userId", "priceId", "status", "createdAt"];
         }
 
         if (records.length === 0) {
@@ -49,8 +53,8 @@ export const generateCsvReport = async (req, res) => {
         const json2csvParser = new Parser({ fields });
         const csv = json2csvParser.parse(records);
 
-        res.header("Content-Type", "text/csv");
-        res.attachment(`${report}-report.csv`);
+        res.header("Content-Type", "text/csv; charset=utf-8");
+        res.setHeader("Content-Disposition", `attachment; filename="${report}-report.csv"`);
         res.send(csv);
     } catch (error) {
         console.error("Error generating CSV:", error);
