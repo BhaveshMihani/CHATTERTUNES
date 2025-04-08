@@ -12,11 +12,11 @@ export const handleSubscriptionWebhook = async (req, res) => {
 
         if (event_type === "checkout.completed") {
             userId = data.custom_data?.userId; 
-            priceId = data.priceId; 
+            priceId = data.subscription_id; 
             status = data.status || "pending"; // Use default status if missing
         } else if (event_type === "transaction.completed") {
             userId = data.custom_data?.userId; // Map Paddle's custom_data.userId to userId
-            priceId = data.priceId;  // Use subscription_id as priceId
+            priceId = data.subscription_id;  // Use subscription_id as priceId
             status = "active"; // Assume active for completed transactions
         }
 
